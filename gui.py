@@ -111,6 +111,83 @@ class ChildBackground(MDBoxLayout):
         self.padding[1] = 4
 
 
+class PropertiesToolBar(BoxLayout):
+    def __init__(self):
+        super(PropertiesToolBar, self).__init__()
+        self.orientation = "vertical"
+        self.padding = [0, 0, 0, 0]
+        self.spacing = 5
+
+        self.background_color = Color(rgba=[.45, .45, .45, 0.9])
+        self.background_rectangle = RoundedRectangle(pos=self.pos, size=self.size)
+        self.background_rectangle.radius = [(12, 12), (12, 12), (12, 12), (12, 12)]
+
+        self.label = MDLabel()
+        self.label.text = "Properties"
+        self.label.halign = "center"
+        self.label.color = [0.9, 0.9, 0.9, 1]
+
+        self.toolbar = SingleBar()
+        self.toolbar.size_hint_y = 0.1
+        self.toolbar.background_rectangle_radius = [(12, 12), (12, 12), (0, 0), (0, 0)]
+        self.toolbar.add_widget(self.label)
+
+        self.second_bar = SingleBar()
+        self.second_bar.bg_padding = [5, 5, 5, 5]
+
+        self.add_widget(self.toolbar)
+        self.add_widget(self.second_bar)
+        self.canvas.add(self.background_color)
+        self.canvas.add(self.background_rectangle)
+
+        self.bind(size=self.update_background)
+        self.bind(pos=self.update_background)
+
+    def update_background(self, *args):
+        self.background_rectangle.pos = self.pos
+        self.background_rectangle.size = self.size
+        self.background_color.rgba = [0.20, 0.20, 0.20, 0.5]
+
+
+class SingleBar(MDBoxLayout):
+    bg_padding = ListProperty([0, 0, 0, 0])
+    background_rectangle_radius = ListProperty([(0, 0), (0, 0), (0, 0), (0, 0)])
+
+    def __init__(self):
+        super(SingleBar, self).__init__()
+        self.background_color = Color(rgba=[.3, .3, .3, 1])
+        self.bg_rectangle = RoundedRectangle(pos=self.pos, size=self.size)
+        self.canvas.add(self.background_color)
+        self.canvas.add(self.bg_rectangle)
+
+        self.bind(size=self.update_background)
+        self.bind(pos=self.update_background)
+        self.bind(bg_padding=self.apply_background_padding)
+
+    def update_background(self, *args):
+        self.bg_rectangle.pos = self.pos
+        self.bg_rectangle.size = self.size
+        self.bg_rectangle.radius = self.background_rectangle_radius
+        self.apply_background_padding()
+
+    def apply_background_padding(self, *args):
+        """If the value at index of 2 in bg_padding ListProperty is changed
+                   the top padding is adjust according to its root widget."""
+
+        """The following two code statement for the left padding of widget."""
+        self.bg_rectangle.size = (self.bg_rectangle.size[0] - self.bg_padding[0], self.bg_rectangle.size[1])
+        self.bg_rectangle.pos = (self.bg_rectangle.pos[0] + self.bg_padding[0], self.bg_rectangle.pos[1])
+
+        """The following  code statement for the right padding of widget."""
+        self.bg_rectangle.size = (self.bg_rectangle.size[0] - self.bg_padding[2], self.bg_rectangle.size[1])
+
+        """The following  code statement for the top padding of widget."""
+        self.bg_rectangle.size = (self.bg_rectangle.size[0], self.bg_rectangle.size[1] - self.bg_padding[1])
+
+        """The following  code statement for the bottom padding of widget."""
+        self.bg_rectangle.pos = (self.bg_rectangle.pos[0], self.bg_rectangle.pos[1] + self.bg_padding[3])
+
+
 class CamApp(MDApp):
     def __init__(self):
         super(CamApp, self).__init__()
@@ -126,6 +203,8 @@ class CamApp(MDApp):
         self.right_top_child_back.orientation = "vertical"
         self.right_bottom_child_back.size_hint_x = 1
         self.right_bottom_child_back.size_hint_y = .3
+
+        self.properties_section = PropertiesToolBar()
 
     def build(self):
         self.capture = ImageGrab.grab(bbox=(0, 0, 1366, 768))
@@ -144,8 +223,9 @@ class CamApp(MDApp):
         take_screenshot = Button(on_press=self.my_camera.take_screenshot)
         take_screenshot.text = "Take A Screenshot"
 
-        self.right_top_child_back.add_widget(take_screenshot)
-        self.right_top_child_back.add_widget(video_record_button)
+        # self.right_top_child_back.add_widget(take_screenshot)
+        # self.right_top_child_back.add_widget(video_record_button)
+        self.right_top_child_back.add_widget(self.properties_section)
         self.right_top_child_back.add_widget(video_stop_button)
         self.right_bottom_child_back.add_widget(Button(text="Will Add Some Widgets"))
 
