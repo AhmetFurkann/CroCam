@@ -115,13 +115,3 @@ class GridBar(GridLayout):
 
         """The following  code statement for the bottom padding of widget."""
         self.bg_rectangle.pos = (self.bg_rectangle.pos[0], self.bg_rectangle.pos[1] + self.bg_padding[3])
-
-
-def create_bar(bar: BarFactory) -> Bar:
-    new_bar = bar.factory_method()
-    return new_bar
-
-#
-#
-# grid_bar = create_bar(GridBarFactory())
-# print(grid_bar.bg_padding)
