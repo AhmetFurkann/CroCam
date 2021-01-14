@@ -25,7 +25,7 @@ from kivymd.app import MDApp
 from kivy.app import App
 
 from threading import Thread
-from gui.bar import *
+from bar import *
 
 from PIL import ImageGrab
 import numpy as np
@@ -86,7 +86,7 @@ class KivyPIL(Image):
 
     def start_record_video(self, instance, video_format):
         print("Video_Format: ", video_format)
-        # self.video.write(self.buf1)
+
         if self.record_flag == False:
             self.recorder_thread = Thread(target=self.start_recording, args=(self.fps, video_format),
                                           name="Recorder_Thread")
@@ -96,17 +96,16 @@ class KivyPIL(Image):
             self.stop_recording(video_format)
             self.record_flag = False
 
-    def start_recording(self, fps, video_format):
+    def start_recording(self, fps, format_argument):
         print("Video recording started!")
         self.flag = True
-        format = "PIM1"
-        if video_format == "mkv":
-            format = "PIM1"
-        elif video_format == "mp4":
-            format = "MP4V"
-        elif video_format == "avi":
-            format = "FMP4"
-        self.fourcc = cv2.VideoWriter_fourcc(*format)
+        if format_argument == "mkv":
+            video_format = "PIM1"
+        elif format_argument == "mp4":
+            video_format = "mp4v"
+        elif format_argument == "avi":
+            video_format = "FMP4"
+        self.fourcc = cv2.VideoWriter_fourcc(*video_format)
         self.video = cv2.VideoWriter(self.video_path, self.fourcc, 30,
                                      (1366, 768), True)
         while self.flag:
@@ -114,14 +113,15 @@ class KivyPIL(Image):
             time.sleep(1 / fps)
 
     def stop_recording(self, video_format):
-        self.numbers_of_video += 1
         self.video_name = "Video" + str(self.numbers_of_video) + "." + video_format
         self.video_path = self.videos_file_path + self.video_name
         print("Video Path: ", self.video_path)
         self.flag = False
         self.video.release()
+        self.numbers_of_video += 1
         self.recorder_thread.join()
         print("Video has been recorded")
+        
 
     def take_screenshot(self, instance):
         screenshot_name = "Screenshot" + str(self.numbers_of_screenshots) + ".jpg"
@@ -279,6 +279,7 @@ class CustomDropDownItem(MDDropDownItem):
 
     def set_new_item(self, instance_menu, instance_menu_item):
         self.set_item(instance_menu_item.text)
+        print("Current Item: ", self.current_item)
         self.menu.dismiss()
 
     def update_the_location(self, *args):
