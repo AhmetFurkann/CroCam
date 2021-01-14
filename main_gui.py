@@ -1,4 +1,4 @@
-from custom_widgets.record_button import RecordButton
+from record_button import RecordButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.uix.stacklayout import StackLayout
 from kivymd.uix.stacklayout import MDStackLayout
