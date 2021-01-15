@@ -121,7 +121,6 @@ class KivyPIL(Image):
         self.numbers_of_video += 1
         self.recorder_thread.join()
         print("Video has been recorded")
-        
 
     def take_screenshot(self, instance):
         screenshot_name = "Screenshot" + str(self.numbers_of_screenshots) + ".jpg"
@@ -185,20 +184,23 @@ class PropertiesToolBar(BoxLayout):
 
         self.inside_bar.size_hint_y = .2
         self.inside_bar.pos_hint = {"top": 1}
-
         self.inside_bar.add_widget(self.video_format_label)
         self.inside_bar.add_widget(self.dropdown_screen)
 
-        self.second_bar.add_widget(self.inside_bar)
         self.record_button = RecordButton()
         self.screenshot_button = RecordButton()
+        self.screenshot_button.inner_background_color = [0, 0, 0, 0]
+        self.screenshot_button.outer_line_width = 0.05
+
         self.buttons_layout = BoxLayout()
         self.buttons_layout.padding = [23, 23, 23, 23]
+        self.buttons_layout.spacing = 40
         # self.buttons_layout.size_hint_y = .2
 
         # self.buttons_layout.padding = [0, 100, 0, 0]
         self.buttons_layout.add_widget(self.record_button)
-        # self.buttons_layout.add_widget(self.screenshot_button)
+        self.buttons_layout.add_widget(self.screenshot_button)
+        self.second_bar.add_widget(self.inside_bar)
         self.second_bar.add_widget(self.buttons_layout)
 
         self.add_widget(self.toolbar)
