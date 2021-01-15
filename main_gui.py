@@ -39,12 +39,13 @@ class KivyPIL(Image):
         super(KivyPIL, self).__init__(**kwargs)
         self.numbers_of_screenshots = 0
         self.numbers_of_video = 0
+        self.video_name = "Video" + str(self.numbers_of_video) + "."
         self.videos_file_path = os.getcwd()
         self.screenshot_file_path = os.getcwd()
         self.video_name = "Video" + str(self.numbers_of_video) + ".mkv"
         self.record_flag = False
         # self.screenshot_name = "Screenshot" + str(self.numbers_of_screenshots) + ".jpg"
-        self.video_path = os.path.join(self.videos_file_path, self.video_name)
+        # self.video_path = os.path.join(self.videos_file_path, self.video_name)
 
         # self.fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 
@@ -106,6 +107,8 @@ class KivyPIL(Image):
         elif format_argument == "avi":
             video_format = "FMP4"
         self.fourcc = cv2.VideoWriter_fourcc(*video_format)
+        self.video_name = "Video" + str(self.numbers_of_video) + "." + format_argument
+        self.video_path = os.path.join(self.videos_file_path, self.video_name)
         self.video = cv2.VideoWriter(self.video_path, self.fourcc, 30,
                                      (1366, 768), True)
         while self.flag:
@@ -113,8 +116,7 @@ class KivyPIL(Image):
             time.sleep(1 / fps)
 
     def stop_recording(self, video_format):
-        self.video_name = "Video" + str(self.numbers_of_video) + "." + video_format
-        self.video_path = self.videos_file_path + self.video_name
+
         print("Video Path: ", self.video_path)
         self.flag = False
         self.video.release()
@@ -124,8 +126,9 @@ class KivyPIL(Image):
 
     def take_screenshot(self, instance):
         screenshot_name = "Screenshot" + str(self.numbers_of_screenshots) + ".jpg"
-        self.screenshot_file_path = os.path.join(self.screenshot_file_path, screenshot_name)
-        cv2.imwrite(self.screenshot_file_path, self.frame)
+        # self.screenshot_file_path = os.path.join(self.screenshot_file_path, screenshot_name)
+        print("File Path: ", os.path.join(self.screenshot_file_path, screenshot_name))
+        cv2.imwrite(os.path.join(self.screenshot_file_path, screenshot_name), self.frame)
         self.numbers_of_screenshots = int(self.numbers_of_screenshots) + 1
         print("Screenshot has been taken!")
         print(self.numbers_of_screenshots)
@@ -334,9 +337,9 @@ class CamApp(MDApp):
         # video_stop_button.text = "Stop Recording"
         self.properties_section.record_button.bind(on_press=lambda instance: self.my_camera.start_record_video(instance,
                                                                                                                self.properties_section.dropdown_item.current_item.lower()))
-
-        take_screenshot = Button(on_press=self.my_camera.take_screenshot)
-        take_screenshot.text = "Take A Screenshot"
+        self.properties_section.screenshot_button.bind(on_press=self.my_camera.take_screenshot)
+        # take_screenshot = Button(on_press=self.my_camera.take_screenshot)
+        # take_screenshot.text = "Take A Screenshot"
 
         # option_caption = MDLabel()
         # option_caption.text = "Properties"
@@ -355,10 +358,6 @@ class CamApp(MDApp):
         # self.background.add_widget(self.left_bottom_child_back)
         self.background.add_widget(self.right_bottom_child_back)
         return self.background
-
-    # def on_stop(self):
-    #     #without this, app waill not exit even if the window is closed
-    #     self.capture.release()
 
 
 if __name__ == '__main__':
