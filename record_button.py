@@ -84,6 +84,7 @@ class RecordButton(ButtonBehavior, Widget):
         self.out_line.circle = (self.center_x, self.center_y, self._outer_radius - (self._outer_line_width / 2))
         self.out_line.width = self._outer_line_width
 
+        self.inner_color.rgba = self.inner_background_color
         self.inner_ellipse.pos = (self.center_x - self._inner_radius, self.center_y - self._inner_radius)
         self.inner_ellipse.size = (self._inner_diameter, self._inner_diameter)
 
@@ -109,6 +110,8 @@ class RecordButton(ButtonBehavior, Widget):
 
         self._inner_diameter = (self._total_diameter - self._inner_line_width) * self.inner_size
         self._inner_radius = self._inner_diameter / 2
+
+
 
     def _update_outlines(self, size):
         self._outer_line_width = self.outer_line_width * size \
