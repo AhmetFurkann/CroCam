@@ -44,10 +44,6 @@ class KivyPIL(Image):
         self.screenshot_file_path = os.getcwd()
         self.video_name = "Video" + str(self.numbers_of_video) + ".mkv"
         self.record_flag = False
-        # self.screenshot_name = "Screenshot" + str(self.numbers_of_screenshots) + ".jpg"
-        # self.video_path = os.path.join(self.videos_file_path, self.video_name)
-
-        # self.fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 
         self.fps = fps
         self.capture = capture
@@ -61,17 +57,12 @@ class KivyPIL(Image):
         frame = ImageGrab.grab(bbox=(0, 0, 1366, 768))
         frame = np.array(frame)
         self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-        # frame = cv2.resize(frame, dsize=(int(Window.size[0]), int(Window.size[1])),
-        #                    interpolation=cv2.INTER_CUBIC)
-        # convert it to texture
+        
         self.buf1 = cv2.flip(self.frame, 0)
         buf = self.buf1.tostring()
-        # print("Lenght Of The Frame: ", len(buf))
         image_texture = Texture.create(
             size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
         image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
-        # display image from the texture
         self.texture = image_texture
 
     def calculate_rectangle_effect(self):
@@ -160,12 +151,7 @@ class PropertiesToolBar(BoxLayout):
         self.label.text = "Properties"
         self.label.halign = "center"
         self.label.color = [0.9, 0.9, 0.9, 1]
-
-        # self.label2 = MDLabel()
-        # self.label2.text = "Properties"
-        # self.label2.halign = "center"
-        # self.label2.color = [0.9, 0.9, 0.9, 1]
-
+        
         self.toolbar = SingleBar()
         self.toolbar.size_hint_y = 0.1
         self.toolbar.background_rectangle_radius = [(12, 12), (12, 12), (0, 0), (0, 0)]
@@ -198,11 +184,10 @@ class PropertiesToolBar(BoxLayout):
         self.buttons_layout = BoxLayout()
         self.buttons_layout.padding = [23, 23, 23, 23]
         self.buttons_layout.spacing = 40
-        # self.buttons_layout.size_hint_y = .2
-
-        # self.buttons_layout.padding = [0, 100, 0, 0]
+        
         self.buttons_layout.add_widget(self.record_button)
         self.buttons_layout.add_widget(self.screenshot_button)
+        
         self.second_bar.add_widget(self.inside_bar)
         self.second_bar.add_widget(self.buttons_layout)
 
@@ -264,7 +249,7 @@ class CustomDropDownItem(MDDropDownItem):
     def __init__(self):
         super(CustomDropDownItem, self).__init__()
         self.pos_hint = {"center_x": .5, "center_y": .5}
-        # self.pos_hint = {"center_y": .5}
+
         menu_items = [{"icon": "git", "text": f"MP4"},
                       {"icon": "git", "text": f"AVI"},
                       {"icon": "git", "text": f"MKV"}]
@@ -298,12 +283,6 @@ class CamApp(MDApp):
         self.background.md_bg_color = [0.55, 0.55, 0.55, 1]
         self.background.cols = 2
 
-        # self.left_top_child_back = ChildBackground()
-        # self.left_top_child_back.size_hint_x = None
-        # self.left_top_child_back.width = 708
-        # self.left_top_child_back.size_hint_y = None
-        # self.left_top_child_back.height = 400
-
         self.right_top_child_back = ChildBackground()
         self.right_top_child_back.size_hint_x = .3
         self.right_top_child_back.size_hint_y = .7
@@ -316,9 +295,6 @@ class CamApp(MDApp):
 
         self.properties_section = PropertiesToolBar()
 
-        # self.left_bottom_child_back = ChildBackground()
-
-        # self.left_bottom_child_back.add_widget(Button(text="Left Bottom"))
 
     def build(self):
         self.capture = ImageGrab.grab(bbox=(0, 0, 1366, 768))
@@ -327,35 +303,16 @@ class CamApp(MDApp):
 
         self.my_camera = KivyPIL(capture=self.capture, fps=30)
 
-        # video_record_button = Button(on_press=self.my_camera.start_record_video)
-        # Todo: Reorganize the Layout
-        # video_record_button = RecordButton()
-        # video_record_button.text = "Start Recording"
-
-        # video_stop_button = Button(on_press=self.my_camera.stop_video)
-        # video_stop_button.size_hint_y = .4
-        # video_stop_button.text = "Stop Recording"
         self.properties_section.record_button.bind(on_press=lambda instance: self.my_camera.start_record_video(instance,
                                                                                                                self.properties_section.dropdown_item.current_item.lower()))
         self.properties_section.screenshot_button.bind(on_press=self.my_camera.take_screenshot)
-        # take_screenshot = Button(on_press=self.my_camera.take_screenshot)
-        # take_screenshot.text = "Take A Screenshot"
 
-        # option_caption = MDLabel()
-        # option_caption.text = "Properties"
-        # option_caption.font_style = "Caption"
 
-        # self.right_top_child_back.add_widget(take_screenshot)
-        # self.right_top_child_back.add_widget(video_record_button)
         self.right_top_child_back.add_widget(self.properties_section)
-        # self.right_top_child_back.add_widget(video_stop_button)
         self.right_bottom_child_back.add_widget(Button(text="Will Add Some Widgets"))
 
-        # self.left_top_child_back.add_widget(self.my_camera)
-        # self.background.add_widget(self.left_top_child_back)
         self.background.add_widget(self.my_camera)
         self.background.add_widget(self.right_top_child_back)
-        # self.background.add_widget(self.left_bottom_child_back)
         self.background.add_widget(self.right_bottom_child_back)
         return self.background
 
