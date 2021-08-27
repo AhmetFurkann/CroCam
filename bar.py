@@ -120,8 +120,3 @@ class GridBar(GridLayout):
 def create_bar(bar: BarFactory) -> Bar:
     new_bar = bar.factory_method()
     return new_bar
-
-#
-#
-# grid_bar = create_bar(GridBarFactory())
-# print(grid_bar.bg_padding)
